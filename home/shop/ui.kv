@@ -1,0 +1,50 @@
+#:import TagScrollView uix.TagScrollView
+#:import ItemDisplayLine uix.ItemDisplayLine
+
+<ShopTap>:
+    name: "shop"
+    icon: "shopping-outline"
+    text: "Shop"
+    TopScrollView:
+        do_scroll_x: False
+        MDGridLayout:
+            id: displays
+            cols: 1
+            spacing: dp(10)
+            orientation: "lr-tb"
+            adaptive_height: True
+            MDBoxLayout:
+                size_hint: 1, None
+                height: dp(50)
+                padding: dp(20), dp(20), dp(20), 0
+                MDTextField:
+                    mode: "round"
+                    size_hint: 0.1, None
+                    height: dp(50)
+                    hint_text: "Search"
+                    icon_right: "magnify"
+                    halign: "right"
+                    line_color_normal: 1,1,1,0
+                    line_color_focus: 1,1,1,0
+                    pos_hint: {"center_y": 0.5}
+                MDIconButton:
+                    icon: "cog-outline"
+                    pos_hint: {"center_y": 0.5}
+
+
+            TagScrollView:
+                size_hint: 1, None
+                height: 80
+                data: [{"size_hint": (None, 1), "text": "balah", "source": assets/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"},]
+
+            ItemDisplayLine:
+                size_hint: 1, None
+                height: 200
+                title: "Hand Bags"
+                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]
+
+            ItemDisplayLine:
+                size_hint: 1, None
+                height: 200
+                title: "Accessories"
+                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]

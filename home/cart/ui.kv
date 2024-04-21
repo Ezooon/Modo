@@ -1,0 +1,52 @@
+#:import InCartItem uix.InCartItem
+<CartTap>:
+    icon: "cart-outline"
+    text: "Cart"
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: self.theme_cls.bg_light
+        background: "assets/leather.jpg"
+        MDBoxLayout:
+            id: toolbar
+            size_hint: 1, None
+            height: dp(60)
+            md_bg_color: self.theme_cls.bg_dark
+            padding: dp(5)
+            spacing: dp(10)
+            MDLabel:
+                text: "Carting"
+                halign: "right"
+            MDIconButton:
+                icon: "history"
+            MDIconButton:
+                icon: "message-text-outline"
+        MDRecycleView:
+            viewclass: "InCartItem"
+            size_hint: 1, 1
+            data: [{"size_hint": (0.6, None), "height": 50}, {"size_hint": (0.6, None), "height": 50}, {"size_hint": (0.6, None), "height": 50}]
+            MDRecycleGridLayout:
+                id: items
+                spacing: dp(5)
+                padding: dp(5)
+                cols: 1
+                adaptive_height: True
+    MDBoxLayout:
+        id: total
+        size_hint: 1, None
+        height: dp(48)
+        md_bg_color: "#BCC6CC40"
+        radius: dp(25), dp(25), 0, 0
+        MDLabel:
+            id: total
+            text: str(sum([child.price for child in items.children])) + " SDG"
+            halign: "center"
+            color: self.theme_cls.opposite_text_color
+        MDLabel:
+            id: num_of_items
+            text: str(len(items.children))
+            halign: "center"
+            color: self.theme_cls.opposite_text_color
+        MDIconButton:
+            icon: "send"
+            theme_icon_color: "Custom"
+            icon_color: rgba("#ffd700")
