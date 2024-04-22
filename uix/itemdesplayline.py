@@ -1,26 +1,29 @@
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.imagelist import MDSmartTile
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty
 from kivy.clock import Clock
+from api.item import Item
+from kivy.loader import Loader
+Loader.loading_image = "assets/item.jpg"
 Builder.load_string("""
 <ItemCard>:
     size_hint: None, 1
     width: self.height
-    source: "item.jpg"
+    source: root.image
     box_radius: [0, 0, 24, 24]
-    box_color: 1, 1, 1, 0.5
+    box_color: self.theme_cls.bg_dark[:3] + [0.5]
     radius: dp(24)
     BoxLayout:
         orientation: "vertical"
         MDLabel:
-            text: root.text
+            text: root.name
             halign: "right"
             pos_hint: {"center_y": 0.5}
             shorten_from: "left"
             shorten: True
         MDLabel:
-            text: root.price
+            text: str(root.price) + " SDG"
             font_style: "Caption"
             
     MDFloatLayout:
@@ -69,7 +72,6 @@ Builder.load_string("""
         data: root.data
         do_scroll_y: False
         scroll_timeout: 500
-        scroll_x: 1
         MDRecycleGridLayout:
             orientation: "rl-tb"
             size_hint: None, 1
@@ -82,8 +84,12 @@ Builder.load_string("""
 
 
 class ItemCard(MDSmartTile):
-    text = StringProperty("")
-    price = StringProperty("10000 SDG")
+    name = StringProperty("")
+    description = StringProperty("")
+    price = NumericProperty(1)
+    image = StringProperty("assets/item.jpg")
+    add_by = NumericProperty(1)
+    stock = NumericProperty(1)
 
 
 class ItemDisplayLine(MDBoxLayout):
@@ -92,10 +98,12 @@ class ItemDisplayLine(MDBoxLayout):
 
     def __init__(self, **kwargs):
         super(ItemDisplayLine, self).__init__(**kwargs)
-        Clock.schedule_once(self.start_right, 1)
+        Clock.schedule_once(self.start, 1)
 
-    def start_right(self, _):
-        self.ids.recycle_view.bind(children=self.rv_add_widget)
+    def start(self, _):
+        Item.get_items(self.load_items)
 
-    def rv_add_widget(self):
+    def load_items(self, items):
+        data = self.ids.recycle_view.data + [{**item.data, "size_hint": (None, 1)} for item in items]
+        self.ids.recycle_view.data = data
         self.ids.recycle_view.scroll_x = 1

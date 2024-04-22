@@ -1,5 +1,6 @@
 #:import TagScrollView uix.TagScrollView
 #:import ItemDisplayLine uix.ItemDisplayLine
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 <ShopTap>:
     name: "shop"
@@ -7,6 +8,7 @@
     text: "Shop"
     TopScrollView:
         do_scroll_x: False
+        effect_cls: ScrollEffect
         MDGridLayout:
             id: displays
             cols: 1
@@ -27,24 +29,24 @@
                     line_color_normal: 1,1,1,0
                     line_color_focus: 1,1,1,0
                     pos_hint: {"center_y": 0.5}
-                MDIconButton:
-                    icon: "cog-outline"
-                    pos_hint: {"center_y": 0.5}
+#                MDIconButton:
+#                    icon: "cog-outline"
+#                    pos_hint: {"center_y": 0.5}
 
-
-            TagScrollView:
-                size_hint: 1, None
-                height: 80
-                data: [{"size_hint": (None, 1), "text": "balah", "source": assets/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"},]
+#
+#            TagScrollView:
+#                size_hint: 1, None
+#                height: 80
+#                data: [{"size_hint": (None, 1), "text": "balah", "source": "assets/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"},]
 
             ItemDisplayLine:
                 size_hint: 1, None
                 height: 200
                 title: "Hand Bags"
-                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]
+#                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]
 
             ItemDisplayLine:
                 size_hint: 1, None
-                height: 200
+                height: 150
                 title: "Accessories"
-                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]
+#                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]
