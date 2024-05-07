@@ -1,34 +1,52 @@
 from kivymd.uix.card import MDCardSwipe
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.lang import Builder
 
 Builder.load_string("""
 <InCartItem>:
-    # size_hint: 1, None
     height: dp(50)
     md_bg_color: 1,1,1,0
     on_swipe_complete:
         self.parent.remove_widget(self)
     MDCardSwipeLayerBox:
+        md_bg_color: 1,0,0,1
     MDCardSwipeFrontBox:
-        md_bg_color: 1,1,1,0.3
+        md_bg_color: 1,1,1,1
         radius: 0
+        on_release: root.pressed(root)
         MDBoxLayout:
             orientation: "vertical"
-            padding: dp(10)
+            padding:  dp(5), dp(10), dp(5), 0
             MDLabel:
-                text: "A ringy paq"
+                text: root.name
                 halign: "right"
-            MDLabel:
-                text: str(root.price) + " SDG"
-                font_style: "Caption"
-        Image:
+            BoxLayout:
+                MDLabel:
+                    text: str(root.price * root.amount) + " SDG"
+                    font_style: "Caption"
+                MDLabel:
+                    text: str(root.price) + " X " + str(root.amount) 
+                    font_style: "Caption"
+                    halign: "right"
+        AsyncImage:
             size_hint: None, 1
-            source: "item.jpg"
+            source: root.image
             width: self.height
             keep_ratio: False
 """)
 
 
 class InCartItem(MDCardSwipe):
-    price = NumericProperty(10000)
+    item = ObjectProperty()
+    name = StringProperty("Item")
+    image = StringProperty("assets/item.jpg")
+    price = NumericProperty(100)
+    amount = NumericProperty(1)
+
+    def on_item(self, _, item):
+        self.name = item.name
+        self.image = item.image
+        self.price = item.price
+
+    def pressed(self, instance):
+        pass

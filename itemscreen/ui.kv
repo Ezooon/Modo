@@ -1,0 +1,92 @@
+#:import ItemDisplayLine uix.ItemDisplayLine
+
+<ItemScreen>:
+    MDSliverAppbar:
+        id: appbar
+        background_color: root.background_color
+
+        MDSliverAppbarHeader:
+            MDRelativeLayout:
+                FitImage:
+                    id: image
+                    source: root.image
+
+        MDSliverAppbarContent:
+            id: content
+            orientation: "vertical"
+            padding: "12dp"
+            spacing: "12dp"
+            adaptive_height: True
+            MDBoxLayout:
+                size_hint: 1, None
+                height: dp(60)
+                MDLabel:
+                    text: str(root.stock) + '\nUnits In Stock'
+                    halign: "center"
+                MDSeparator:
+                    orientation: "vertical"
+                MDLabel:
+                    text: str(root.price) + ' SDG\nper Units'
+                    halign: "center"
+
+            MDCard:
+                size_hint: 1, None
+                height: dp(30)
+                md_bg_color: self.theme_cls.bg_darkest
+                MDIconButton:
+                    size_hint: 1, 1
+                    icon: "plus"
+                    md_bg_color: 0, 1, 0, 1
+                    on_release:
+                        if root.cart_units < root.stock: root.cart_units += 1
+                MDLabel:  # ToDo see if it's better to make this a confirm button to solve the problem of the real time stock draining
+                    size_hint: 1, 1
+                    text: str(root.cart_units) + " in cart"
+                    halign: "center"
+                    text_color: 0,0,0,1
+                MDIconButton:
+                    size_hint: 1, 1
+                    icon: "minus"
+                    md_bg_color: 1, 0, 0, 1
+                    on_release:
+                        if root.cart_units > 0: root.cart_units -= 1
+
+            MDLabel:
+                text: "Description:"
+                size_hint: 1, None
+                height: dp(20)
+            MDLabel:
+                id: description
+                text: root.description
+                size_hint: 1, None
+                height: dp(20)  # ToDo have this increase when pressing more on the button
+
+            ItemDisplayLine:
+                size_hint: 1, None
+                height: 200
+                title: "Simular"
+
+            ItemDisplayLine:
+                size_hint: 1, None
+                height: 200
+                title: "Also See"
+
+
+    MDBoxLayout:
+        size_hint: 1, None
+        height: dp(60)
+        pos_hint: {"top": 1}
+        MDIconButton:
+            icon: "arrow-left"
+            pos_hint: {'center_y': 0.5}
+        MDLabel:
+            id: title
+            text: "item"
+            font_style: "H6"
+            halign: "right"
+            outline_color: 1,1,1,1
+            outline_width: sp(1)
+            pos_hint: {'center_y': 0.5}
+        MDIconButton:
+            icon: "heart-outline"
+            pos_hint: {'center_y': 0.5}

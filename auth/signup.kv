@@ -1,0 +1,100 @@
+<SignUp>:
+    canvas.before:
+        Color:
+            rgba: 1,1,1,1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: "assets/login_background.png"
+    MDFlatButton:
+        text: "Just Browsing!"
+        text_color: 0.6, 0.6, 0, 1
+        theme_text_color: "Custom"
+        font_style: "Overline"
+        pos_hint: {'right': 1, 'top': 1}
+        font_size: sp(13)
+
+
+    MDBoxLayout:
+        id: name_box
+        orientation: "vertical"
+        spacing: dp(35)
+        padding: dp(25)
+        pos_hint: {'center_y': 0.56}
+        size_hint: 1, None
+        adaptive_height: True
+
+        MDLabel:
+            text: "Join Us"
+            text_color: 0.7, 0.6, 0, 1
+            theme_text_color: "Custom"
+            font_style: "H3"
+            pos_hint: {'top': 1}
+
+        MDTextField:
+            id: username
+            mode: "round"
+            icon_right: "account-outline"
+            hint_text: "username"
+            required: True
+
+        MDTextField:
+            id: email
+            mode: "round"
+            hint_text: "email"
+            icon_right: "email-outline"
+            required: True
+
+        MDBoxLayout:
+            size_hint: 1, None
+            padding: dp(10)
+            height: dp(40)
+            MDRectangleFlatButton:
+                text: "Next"
+                disabled: not (username.text and email.text)
+                on_release:
+                    # Todo validate the email first
+                    root.animate(1)
+
+            MDFlatButton:
+                text: "Login"
+
+    MDBoxLayout:
+        id: pass_box
+        orientation: "vertical"
+        x: name_box.right
+        spacing: dp(35)
+        padding: dp(25)
+        pos_hint: {'center_y': 0.56}
+        size_hint: 1, None
+        adaptive_height: True
+
+        MDTextField:
+            id: password
+            mode: "round"
+            icon_right: "account-key-outline"
+            hint_text: "password"
+            required: True
+            password: True
+
+        MDTextField:
+            id: password2
+            mode: "round"
+            hint_text: "confirm password"
+            icon_right: "form-textbox-password"
+            required: True
+            password: True
+
+        MDBoxLayout:
+            size_hint: 1, None
+            padding: dp(10)
+            height: dp(40)
+            MDRectangleFlatButton:
+                text: "Sign-Up"
+                disabled: not (password.text and password2.text)
+                on_release:
+                    root.sign_up(username.text, email.text, password.text, password2.text)
+            MDFlatButton:
+                text: "Back"
+                on_release:
+                    root.animate(0)

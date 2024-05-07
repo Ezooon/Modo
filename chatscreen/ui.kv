@@ -1,0 +1,59 @@
+#:import ChatBubble uix.ChatBubble
+#:import ReceivedBubble uix.ReceivedBubble
+#:import CartBubble uix.CartBubble
+
+
+<ChatScreen>:
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: self.theme_cls.bg_light
+        background: "assets/leather.jpg"
+        size_hint: 1, 1
+
+        MDBoxLayout:
+            id: toolbar
+            size_hint: 1, None
+            height: dp(60)
+            md_bg_color: self.theme_cls.bg_darkest
+            padding: dp(5)
+            spacing: dp(10)
+            MDIconButton:
+                icon: "arrow-left"
+                on_release:
+                    root.parent.current = "home"
+            MDLabel:
+                text: "Chat Room"
+                halign: "right"
+
+        MDScrollView:
+            MDBoxLayout:
+                id: messages
+                orientation: "vertical"
+                spacing: dp(20)
+                padding: dp(20)
+                size_hint: 1, None
+                adaptive_height: True
+                CartBubble:
+                ReceivedBubble:
+                    text: "We will be handling your order as soon as possible!"
+
+        MDBoxLayout:
+            adaptive_height: True
+            padding: dp(10), dp(5), dp(10), dp(10),
+            spacing: dp(10)
+            md_bg_color: self.theme_cls.bg_normal
+            MDTextField:
+                id: text_field
+                size_hint: 1, None
+                height: dp(20)
+                mode: "rectangle"
+                multiline: True
+            MDIconButton:
+                icon: "send"
+                pos_hint: {'center_y': 0.5}
+                theme_icon_color: "Custom"
+                icon_color: rgba("#ffd700")
+                on_release:
+                    if text_field.text: root.send(text_field.text)
+                    text_field.text = ""
+

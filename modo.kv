@@ -1,4 +1,29 @@
 #:import Home home.Home
+#:import Login auth.Login
+#:import SignUp auth.SignUp
+#:import ChatScreen chatscreen.ChatScreen
+#:import ItemScreen itemscreen.ItemScreen
+#:import FavoriteScreen favoritescreen.FavoriteScreen
 
 <SM>:
+    MDScreen:
+        id: splash
+        Image:
+            source: "assets/Modo Logo.jpg"
+        MDSpinner:
+            size: dp(49), dp(49)
+            size_hint: None, None
+            pos_hint: {"center_x": 0.5}
+            y: dp(100)
     Home:
+        name: "home"
+    ItemScreen:
+        name: "item_screen"
+    Login:
+        name: "login"
+    SignUp:
+        name: "signup"
+    FavoriteScreen:
+        name: "favorite_screen"
+    ChatScreen:
+        name: "chat screen"
