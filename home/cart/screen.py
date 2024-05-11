@@ -3,9 +3,13 @@ from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.properties import NumericProperty, ListProperty
 
+from database.messages import db_messages
+from uix.incartitem import InCartSwipeItem
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
-from uix.incartitem import InCartItem
 from kivymd.toast import toast
+from kivymd.app import MDApp
+
+from api.cart import Cart
 
 Builder.load_file("home/cart/ui.kv")
 
@@ -16,14 +20,15 @@ class CartTap(MDBottomNavigationItem):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.ordered_cart = None
         self.focused_item = None
 
-    def add_item(self, item):
-        if item.id in self.items:
-            toast(f"{item.name} is already in cart")
-        self.items.append(item.id)
+    def add_item(self, c_item):
+        if c_item.item.id in self.items:
+            toast(f"{c_item.name} is already in cart")
+        self.items.append(c_item.item.id)
 
-        itemx = InCartItem(item=item, size_hint=(0.6, None), height=50)
+        itemx = InCartSwipeItem(c_item=c_item)
         itemx.pressed = self.change_amount
         self.ids.items_list.add_widget(itemx)
 
@@ -54,10 +59,22 @@ class CartTap(MDBottomNavigationItem):
 
     def change_amount(self, itemx):
         self.focused_item = itemx
-        self.ids.amount_label.text = "X" + str(itemx.amount)
+        self.ids.amount_label.text = "X" + str(itemx.item_card.amount)
         Animation(y=dp(31), d=0.1).start(self.ids.total_box)
 
     def on_touch_down(self, touch):
         if not self.ids.amount_box.collide_point(*self.to_local(*touch.pos)):
             Animation(y=0, d=0.1).start(self.ids.total_box)
         return super().on_touch_down(touch)
+
+    def order(self):
+        c_items = [widget.c_item for widget in self.ids.items_list.children]
+        self.ordered_cart = Cart(c_items=c_items)
+        self.ordered_cart.order(self.ordered)
+
+    def ordered(self, cart):
+        app = MDApp.get_running_app()
+        db_messages.add_messages([cart.message])
+        app.chat_screen.add_messages([cart.message])
+        self.parent.parent.parent.parent.current = "chat_screen"
+

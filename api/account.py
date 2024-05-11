@@ -52,7 +52,6 @@ class Account:
         api_request("account/favorite/", on_success=item_wrapper, params={"results": results}, **kwargs)
 
     def _fill_data(self, _, data):
-        print(data)
         self.id = data.get("id") or -1
         self.username = data.get("username") or "name"
         self.email = data.get("email")

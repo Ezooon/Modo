@@ -6,7 +6,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty
 from kivy.clock import Clock
 from kivy.metrics import dp
-from api.item import Item
+from api.item import Item, db_items
+from api.cart import CartItem
 from kivy.loader import Loader
 from kivymd.app import MDApp
 
@@ -21,18 +22,22 @@ Builder.load_string("""
     radius: dp(24)
     BoxLayout:
         orientation: "vertical"
+        padding: 0
+        spacing: dp(10)
         MDLabel:
             text: root.name
             halign: "right"
             pos_hint: {"center_y": 0.5}
             shorten_from: "left"
             shorten: True
+            font_size: sp(14)
             color: self.theme_cls.bg_normal
-            outline_color: 0,0,0,1
+            outline_color: self.theme_cls.opposite_bg_normal
             outline_width: sp(1)
         MDLabel:
             text: str(root.price) + " SDG"
             font_style: "Caption"
+            font_size: sp(12)
             color: self.theme_cls.bg_normal
             outline_color: 0,0,0,1
             outline_width: sp(1)
@@ -96,7 +101,7 @@ Builder.load_string("""
 
 
 class ItemCard(MDSmartTile):
-    item = ObjectProperty(Item({}))
+    item = ObjectProperty(Item())
     name = StringProperty("")
     description = StringProperty("")
     price = NumericProperty(1)
@@ -153,12 +158,6 @@ class ItemCard(MDSmartTile):
 
     def on_release(self):
         sm = MDApp.get_running_app().root
-        if "item_screen" not in sm.screen_names:
-            from itemscreen import ItemScreen
-            item_s = ItemScreen()
-            sm.add_widget(item_s)
-            item_s.name = "item_screen"
-
         sm.get_screen("item_screen").item = self.item
         sm.current = "item_screen"
 
@@ -168,10 +167,11 @@ class ItemCard(MDSmartTile):
 
     def to_cart(self, button):
         app = MDApp.get_running_app()
+        db_items.add_items([self.item])
         if self.item.id in app.cart.items:
             app.cart.remove_item(self.item.id)
         else:
-            app.cart.add_item(self.item)
+            app.cart.add_item(CartItem(item=self.item.data))
 
 
 class ItemDisplayLine(MDBoxLayout):

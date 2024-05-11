@@ -1,9 +1,12 @@
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivy.properties import StringProperty, ObjectProperty, NumericProperty
+from kivy.properties import StringProperty, ObjectProperty, NumericProperty, ListProperty
 from kivy.lang import Builder
 from kivy.clock import Clock
 
 from datetime import datetime
+
+from api.cart import Cart, CartItem
+from api.item import Item
 from api.message import Message
 
 Builder.load_file("uix/chatbubbles.kv")
@@ -18,7 +21,7 @@ def am_pm(t):
 
 class BubbleBase(MDBoxLayout):
     BUBBLES = {}
-    message = ObjectProperty()
+    message = ObjectProperty(force_dispatch=True)
 
     text = StringProperty("...")
     sent = StringProperty("12:00 pm")
@@ -58,7 +61,20 @@ class ChatBubble(BubbleBase):
 
 
 class CartBubble(BubbleBase):
-    pass
+    c_items = ListProperty()
+
+    def on_message(self, _, msg):
+        super(CartBubble, self).on_message(_, msg)
+
+        def on_failure(_):
+            Clock.schedule_once(lambda x: self.message.send(), 5)
+
+        if not msg.sent:
+            msg.send(on_failure=on_failure)
+
+        c_items = CartItem.wrapper(Cart.itemsfromstr(msg.content))
+        Item.check_items([ci.item.id for ci in c_items])
+        self.c_items = c_items
 
 
 class ReceivedBubble(BubbleBase):

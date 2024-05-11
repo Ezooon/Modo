@@ -79,6 +79,8 @@
         MDIconButton:
             icon: "arrow-left"
             pos_hint: {'center_y': 0.5}
+            on_release:
+                app.root.current = "home"
         MDLabel:
             id: title
             text: "item"

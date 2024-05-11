@@ -14,12 +14,13 @@ class Message:
         self._on_data(data)
 
         self.sent_by_user = self.sent_by == MDApp.get_running_app().user.id
+        self.sent_to_user = self.sent_to == MDApp.get_running_app().user.id
 
         # add to All MESSAGES
         Message.MESSAGES[self.id] = self
 
     def _on_data(self, data):
-        self.id = data.get("id") or min(Message.MESSAGES.keys()) - 1
+        self.id = data.get("id") or min(Message.MESSAGES.keys() or [1]) - 1
         self.sent_by = data.get("sent_by") or -1
         self.sent_to = data.get("sent_to") or -1
         self.content = data.get("content") or "..."
@@ -67,7 +68,7 @@ class Message:
         api_request("chat/messages/", message_wrapper, body={"wait_list": list(cls.unread.keys())})
 
     @classmethod
-    def get_undelivered_messages(cls, on_success=lambda x: None):
+    def get_undelivered_messages(cls, on_success=lambda x: None, **kwargs):
         def message_wrapper(thread, response):
             messages_data = response
             messages = []
@@ -79,7 +80,7 @@ class Message:
             on_success(messages)
 
         api_request("chat/messages/", message_wrapper,
-                    params={"delivered": False, "sent_to": MDApp.get_running_app().user.id})
+                    params={"delivered": False, "sent_to": MDApp.get_running_app().user.id}, **kwargs)
 
     @classmethod
     def mark_delivered(cls):

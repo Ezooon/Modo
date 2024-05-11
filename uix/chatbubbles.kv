@@ -1,5 +1,6 @@
 #:import Window kivy.core.window.Window
-#:import InCartItem uix.InCartItem
+#:import CartCard uix.CartCard
+
 
 <ChatBubble>:
     pos_hint: {'right': 1}
@@ -51,8 +52,6 @@
 <CartBubble>:
     pos_hint: {'right': 1}
     orientation: "vertical"
-    md_bg_color: "#ffd700"
-    radius: dp(10), 0, dp(10), dp(10)
     padding:  dp(5), dp(10), dp(5), 0
     spacing: dp(2)
     size_hint: 0.7 if (Window.width * 0.7) > dp(300) else None, None
@@ -63,34 +62,17 @@
             rgba: rgba("#ffd700")
         Triangle:
             points: [self.right, self.top, self.right + dp(15), self.top, self.right, self.top - dp(15)]
-    InCartItem:
-        size_hint: 1, None
-        height: dp(50)
-    InCartItem:
-        size_hint: 1, None
-        height: dp(50)
-    InCartItem:
-        size_hint: 1, None
-        height: dp(50)
-    InCartItem:
-        size_hint: 1, None
-        height: dp(50)
-    MDBoxLayout:
-        size_hint: 1, None
-        height: dp(30)
-        MDLabel:
-            id: total
-            text: "400 SDG"
-            halign: "center"
-            font_style: "Caption"
-            pos_hint: {"bottom": 0.9}
-        MDLabel:
-            id: num_of_items
-            text: "4 Itmes"
-            halign: "center"
-            font_style: "Caption"
-            pos_hint: {"bottom": 0.9}
 
+        Color:
+            rgba: rgba("#ffd700")
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: dp(10), 0, dp(10), dp(10)
+
+    CartCard:
+        items: root.c_items
+        size_hint: 1, None
     FloatLayout:
         size_hint: None, None
         size: 0, 0
@@ -101,7 +83,7 @@
             size: dp(100), dp(15)
             spacing: dp(3)
             MDLabel:
-                text: "12:29 pm"
+                text: root.sent
                 halign: "right"
                 color: self.theme_cls.opposite_text_color
                 font_style: "Caption"
@@ -110,10 +92,10 @@
                 font_size: sp(10)
                 pos_hint: {"center_y": 0.5}
             MDIcon:
-                icon: "check-all"  # "clock-outline"  # "check"
+                icon: ["clock-outline", "check", "check-all", "check-all"][root.status]
                 font_size: dp(15)
                 pos_hint: {"center_y": 0.5}
-                color: self.theme_cls.opposite_text_color
+                color: self.theme_cls.opposite_text_color if root.status < 3 else self.theme_cls.accent_color
 
 <ReceivedBubble>:
     orientation: "vertical"

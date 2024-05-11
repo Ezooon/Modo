@@ -15,17 +15,20 @@
             MDLabel:
                 text: "Carting"
                 halign: "right"
-            MDIconButton:
-                icon: "history"
+#            MDIconButton:
+#                icon: "history"
             MDIconButton:
                 icon: "message-text-outline"
+                on_release:
+                    app.root.current = "chat_screen"
+
         ScrollView:
             id: cart_list
             size_hint: 1, 1
             MDGridLayout:
                 id: items_list
-                spacing: dp(5)
-                padding: dp(5)
+                spacing: dp(10)
+                padding: dp(5), dp(10), dp(5), dp(10)
                 cols: 1
                 adaptive_height: True
 
@@ -38,7 +41,7 @@
         radius: dp(25), dp(25), 0, 0
         MDLabel:
             id: total
-            text: str(sum([child.price * child.amount for child in items_list.children])) + " SDG"
+#            text: str(sum([child.item.price * child.amount for child in items_list.children])) + " SDG"
             halign: "center"
             color: self.theme_cls.opposite_text_color
         MDLabel:
@@ -50,6 +53,8 @@
             icon: "send"
             theme_icon_color: "Custom"
             icon_color: rgba("#ffd700")
+            on_release:
+                root.order()
 
     MDCard:
         id: amount_box
@@ -63,9 +68,9 @@
             icon: "plus"
             md_bg_color: 0, 1, 0, 1
             on_release:
-                if root.focused_item.amount < root.focused_item.item.stock: root.focused_item.amount += 1
-                total.text = str(sum([child.price * child.amount for child in items_list.children])) + " SDG"
-                amount_label.text = "X" + str(root.focused_item.amount)
+                if root.focused_item.item_card.amount < root.focused_item.item_card.c_item.item.stock: root.focused_item.item_card.amount += 1
+                total.text = str(sum([child.item_card.price * child.item_card.amount for child in items_list.children])) + " SDG"
+                amount_label.text = "X" + str(root.focused_item.item_card.amount)
         MDLabel:
             id: amount_label
             size_hint: 1, 1
@@ -77,7 +82,7 @@
             icon: "minus"
             md_bg_color: 1, 0, 0, 1
             on_release:
-                if root.focused_item.amount > 0: root.focused_item.amount -= 1
-                total.text = str(sum([child.price * child.amount for child in items_list.children])) + " SDG"
-                amount_label.text = "X" + str(root.focused_item.amount)
+                if root.focused_item.item_card.amount > 0: root.focused_item.item_card.amount -= 1
+                total.text = str(sum([child.item_card.price * child.item_card.amount for child in items_list.children])) + " SDG"
+                amount_label.text = "X" + str(root.focused_item.item_card.amount)
 

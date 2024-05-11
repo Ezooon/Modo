@@ -1,1 +1,1 @@
-from .logic import ShopTap
+from .screen import ShopTap

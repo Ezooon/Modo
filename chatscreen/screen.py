@@ -16,14 +16,23 @@ class ChatScreen(MDScreen):
             messages.append(Message(**data))
         Clock.schedule_once(lambda x: self.add_messages(messages), 0)
 
-    def send(self, text):
-        bubble = ChatBubble(message=Message(content=text))
+    def on_enter(self, *args):
+        if self.ids:
+            self.ids.sv.scroll_y = 0
+
+    def send(self, text: str):
+        if text.startswith('C{"id": '):
+            bubble = CartBubble(message=Message(content=text))
+        else:
+            bubble = ChatBubble(message=Message(content=text))
         self.ids.messages.add_widget(bubble)
 
     def add_messages(self, messages):
         for msg in messages:
             if msg.id not in ChatBubble.BUBBLES:
-                if msg.sent_by_user:
-                    self.ids.messages.add_widget(ChatBubble(message=msg))
-                else:
+                if msg.content.startswith('C{"id": '):
+                    self.ids.messages.add_widget(CartBubble(message=msg))
+                elif msg.sent_to_user:
                     self.ids.messages.add_widget(ReceivedBubble(message=msg))
+                else:
+                    self.ids.messages.add_widget(ChatBubble(message=msg))

@@ -1,6 +1,7 @@
 from kivymd.app import MDApp
 from kivymd.uix.screenmanager import ScreenManager
-from kivy.properties import StringProperty, ObjectProperty, ListProperty
+from kivymd.toast import toast
+from kivy.properties import StringProperty, ObjectProperty, ListProperty, BooleanProperty
 from kivy.clock import Clock
 
 
@@ -9,6 +10,8 @@ class SM(ScreenManager):
 
 
 class ModoApp(MDApp):
+    online = BooleanProperty()
+
     user = ObjectProperty()
     username = StringProperty("")
     email = StringProperty("")
@@ -55,15 +58,15 @@ class ModoApp(MDApp):
 
         # load saved cart
         self.cart = sm.get_screen("home").ids.cart
-        conf_cart = self.config.get("App", "saved cart")
-        if conf_cart:
-            cart_items = map(int, conf_cart.split(", "))
-            self.cart.items = cart_items
-        else:
-            self.cart.items = []
+        # conf_cart = self.config.get("App", "saved cart")  ToDo in another update
+        # if conf_cart:
+        #     cart_items = map(int, conf_cart.split(", "))
+        #     self.cart.items = cart_items
+        # else:
+        #     self.cart.items = []
 
         # start chat check loop
-        self.chat_screen = sm.get_screen("chat screen")
+        self.chat_screen = sm.get_screen("chat_screen")
         Clock.schedule_interval(self.check_new_messages, 5)
 
         # if the first launch start with the signup screen
@@ -79,7 +82,19 @@ class ModoApp(MDApp):
 
     def check_new_messages(self, dt):
         from api.message import Message
-        Message.get_undelivered_messages(self.chat_screen.add_messages)
+
+        def set_offline(*args):
+            if self.online:
+                self.online = False
+                toast("You Are Offline", (1, 0, 0, 1))
+
+        def set_online(*args):
+            if not self.online:
+                self.online = True
+                toast("You Are Back Online", (0, 1, 0, 1))
+            self.chat_screen.add_messages(*args)
+
+        Message.get_undelivered_messages(set_online, on_failure=set_offline)
         Message.refresh_unread()
 
     def on_username(self, _, value):
