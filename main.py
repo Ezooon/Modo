@@ -1,8 +1,17 @@
+import webbrowser
+
 from kivymd.app import MDApp
 from kivymd.uix.screenmanager import ScreenManager
 from kivymd.toast import toast
-from kivy.properties import StringProperty, ObjectProperty, ListProperty, BooleanProperty
+from kivy.properties import StringProperty, ObjectProperty, ListProperty, BooleanProperty, NumericProperty
 from kivy.clock import Clock
+import json
+
+
+with open('about.txt', 'r') as f:
+    about = f.read()
+with open('privacy policy.txt', 'r') as f:
+    privacy_policy = f.read()
 
 
 class SM(ScreenManager):
@@ -13,8 +22,10 @@ class ModoApp(MDApp):
     online = BooleanProperty()
 
     user = ObjectProperty()
+    user_id = NumericProperty(0)
     username = StringProperty("")
     email = StringProperty("")
+    user_api_token = StringProperty("")
 
     cart = ObjectProperty()
 
@@ -22,14 +33,17 @@ class ModoApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.user_id = None
-        self.user_api_token = None
+        self.lang = None
         self.chat_screen = None
+        self.about = about
+        self.privacy_policy = privacy_policy
+        self.send_list = []
 
     def build_config(self, config):
         config.setdefaults("App", {
             "saved cart": [],
             "first launch": True,
+            "language": "English"
         })
 
         config.setdefaults("Account", {
@@ -40,6 +54,10 @@ class ModoApp(MDApp):
         })
 
     def build(self):
+        # language
+        with open('assets/lang/' + self.config.get("App", "language") + ".json", "r", encoding="UTF-8") as jf:
+            self.lang = json.load(jf)
+
         # account
         from api.account import Account
 
@@ -53,8 +71,8 @@ class ModoApp(MDApp):
         # favorites
         self.user.get_favorite(self.set_favorite, results="simple")
 
-        sm = SM()
         self.theme_cls.primary_palette = "Amber"
+        sm = SM()
 
         # load saved cart
         self.cart = sm.get_screen("home").ids.cart
@@ -77,14 +95,13 @@ class ModoApp(MDApp):
             sm.current = "home"
         self.config.set("App", "first launch", False)
         self.config.write()
-
         return sm
 
     def check_new_messages(self, dt):
         from api.message import Message
 
-        def set_offline(*args):
-            if self.online:
+        def set_offline(request, data):
+            if self.online and not isinstance(data, dict):
                 self.online = False
                 toast("You Are Offline", (1, 0, 0, 1))
 
@@ -94,11 +111,23 @@ class ModoApp(MDApp):
                 toast("You Are Back Online", (0, 1, 0, 1))
             self.chat_screen.add_messages(*args)
 
+        def remove_msg(msg):
+            self.send_list.remove(msg)
+
         Message.get_undelivered_messages(set_online, on_failure=set_offline)
         Message.refresh_unread()
+        for msg in self.send_list:
+            msg.send(remove_msg)
+
+    def request_login(self, *args):
+        self.root.current = "signup"
 
     def on_username(self, _, value):
         self.config.set("Account", "username", value)
+        self.config.write()
+
+    def on_user_id(self, _, value):
+        self.config.set("Account", "id", value)
         self.config.write()
 
     def on_email(self, _, value):
@@ -115,6 +144,17 @@ class ModoApp(MDApp):
     def on_stop(self):
         self.config.set("App", "saved cart", str(self.cart.items)[1:-1])
         self.config.write()
+
+    def open_url(self, url):
+        webbrowser.open(url)
+
+    def logout(self):
+        from api.account import Account
+        self.user = Account()
+        self.user_id = self.user.id
+        self.username = self.user.username
+        self.email = self.user.email
+        self.user_api_token = ""
 
 
 ModoApp().run()

@@ -31,31 +31,40 @@ class CartTap(MDBottomNavigationItem):
         itemx = InCartSwipeItem(c_item=c_item)
         itemx.pressed = self.change_amount
         self.ids.items_list.add_widget(itemx)
+        return itemx
 
     def remove_item(self, id):
         items_list = self.ids.items_list
         for itemx in items_list.children:
-            if itemx.item.id == id:
+            if itemx.c_item.item.id == id:
                 items_list.remove_widget(itemx)
                 self.items.remove(id)
                 break
 
+    def get_widget(self, item_id):
+        items = self.ids.items_list.children
+        for itemx in items:
+            if itemx.c_item.item.id == item_id:
+                return itemx
+
     def increase_item_amount(self, id):
         items = self.ids.items_list.children
         for itemx in items:
-            if itemx.item.id == id:
+            if itemx.c_item.id == id:
                 stock = itemx.item.stock
-                if itemx.amount < stock:
-                    itemx.amount += 1
+                if itemx.item_card.amount < stock:
+                    itemx.item_card.amount += 1
                 else:
                     toast("we're out of stock")
+                return itemx.item_card.amount
 
     def decrease_item_amount(self, id):
         items = self.ids.items_list.children
         for itemx in items:
-            if itemx.item.id == id:
-                if itemx.amount > 1:
-                    itemx.amount -= 1
+            if itemx.c_item.id == id:
+                if itemx.item_card.amount > 1:
+                    itemx.item_card.amount -= 1
+                return itemx.item_card.amount
 
     def change_amount(self, itemx):
         self.focused_item = itemx

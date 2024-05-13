@@ -5,7 +5,7 @@
 <MeTap>:
     name: "me"
     icon: "face-woman-shimmer"
-    text: "Me"
+    text: app.lang["Me"]
 	MDBoxLayout:
 		size_hint: 1, 1
 		orientation: 'vertical'
@@ -36,8 +36,10 @@
                 orientation: 'vertical'
                 pos_hint: {'center_y': 0.5}
                 adaptive_height: True
+                disabled: not app.username
+                opacity: 0 if not app.username else 1
                 MDLabel:
-                    text: app.user.username if app.user else "Login"
+                    text: app.username
                     halign: 'right'
                     size_hint: 1, None
                     height: dp(50)
@@ -49,11 +51,14 @@
                     size_hint: 1, None
                     height: dp(50)
             FitImage:
-                source: app.user.profile_picture_url() if app.user else "assets/account.jpg"
+                id: user_image
+                source: app.user.profile_picture_url() if app.username else "assets/images/account.jpg"
                 size_hint: None, .9
                 radius: self.height/2
                 pos_hint: {'center_y': 0.5}
                 width: self.height
+                disabled: not app.username
+                opacity: 0 if not app.username else 1
                 canvas.after:
                     Color:
                         rgba: rgba("#FFD700")
@@ -63,26 +68,51 @@
 
     	MDList:
     	    size_hint: 1, 1
+#            OneLineIconItem:
+#                text: "History"
+#                icon: "history"
             OneLineIconItem:
-                text: "History"
-                icon: "history"
-            OneLineIconItem:
-                text: "Liked"
+                text: app.lang["Liked"]
                 icon: "heart"
                 on_release:
-                    root.parent.parent.parent.parent.current = "favorite_screen"
+                    if app.username: app.root.current = "favorite_screen"
+                    if not app.username: app.request_login()
+
             OneLineIconItem:
-                text: "Settings"
+                text: app.lang["Settings"]
                 icon: "cog-outline"
             OneLineIconItem:
-                text: "About"
+                text: app.lang["Privacy Policy"]
+                icon: "script-text-key-outline"
+                on_release:
+                    app.root.current = "privacy_policy"
+            OneLineIconItem:
+                text: app.lang["About"]
                 icon: "information-outline"
-
+                on_release:
+                    app.root.current = "about"
+            OneLineIconItem:
+                text: app.lang["Log Out" if app.username else "Login"]
+                icon: "logout" if app.username else "login"
+                on_release:
+                    if app.username: app.logout()
+                    if not app.username: app.root.current = "login"
 
     MDIconButton:
         icon: 'pencil'
         theme_text_color: "Custom"
         icon_color: 0,0,0,1
         pos_hint: {"top": 1}
-        
+        disabled: not app.username
+        opacity: 0 if not app.username else 1
+
+    MDRaisedButton:
+        text: app.lang["Sign Up and Order NOW!"]
+        pos_hint: {'center_x': 0.5}
+        center_y: user_image.center_y
+        disabled: bool(app.username)
+        opacity: 0 if app.username else 1
+        on_release: app.root.current = "signup"
+
+
 

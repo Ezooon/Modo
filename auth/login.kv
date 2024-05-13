@@ -5,14 +5,15 @@
         Rectangle:
             size: self.size
             pos: self.pos
-            source: "assets/login_background.png"
+            source: "assets/images/login_background.png"
     MDFlatButton:
-        text: "Just Browsing!"
+        text: app.lang["Just Browsing!"]
         text_color: 0.6, 0.6, 0, 1
         theme_text_color: "Custom"
         font_style: "Overline"
         pos_hint: {'right': 1, 'top': 1}
         font_size: sp(13)
+        on_release: app.root.current = "home"
 
     MDBoxLayout:
         id: name_box
@@ -26,22 +27,28 @@
         MDTextField:
             id: username
             mode: "round"
-            hint_text: "username"
+            hint_text: app.lang["username"]
             icon_right: "account-outline"
+            next: password
 
         MDTextField:
             id: password
+            password: True
             mode: "round"
-            hint_text: "password"
+            hint_text: app.lang["password"]
             icon_right: "account-key-outline"
+            next: lambda x: root.login(username.text, password.text)
 
         MDBoxLayout:
             size_hint: 1, None
             padding: dp(10)
             height: dp(40)
             MDRectangleFlatButton:
-                text: "Login"
+                text: app.lang["Login"]
                 on_release: root.login(username.text, password.text)
 
             MDFlatButton:
-                text: "Sign-Up"
+                text: app.lang["Sign-Up"]
+                on_release:
+                    app.root.current = "signup"
+

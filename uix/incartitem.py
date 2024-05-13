@@ -40,7 +40,7 @@ Builder.load_string("""
     height: dp(60)
     radius: dp(10)
     on_swipe_complete:
-        self.parent.remove_widget(self)
+        app.cart.remove_item(self.c_item.item.id)
     MDCardSwipeLayerBox:
         md_bg_color: 1,0,0,0
     InCartItem:
@@ -62,7 +62,7 @@ class InCartSwipeItem(MDCardSwipe):
 class InCartItem(MDCardSwipeFrontBox):
     c_item = ObjectProperty(force_dispatch=True)
     name = StringProperty("Item")
-    image = StringProperty("assets/item.jpg")
+    image = StringProperty("assets/images/item.jpg")
     price = NumericProperty(0)
     amount = NumericProperty(1)
 

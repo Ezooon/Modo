@@ -5,15 +5,15 @@
         Rectangle:
             size: self.size
             pos: self.pos
-            source: "assets/login_background.png"
+            source: "assets/images/login_background.png"
     MDFlatButton:
-        text: "Just Browsing!"
+        text: app.lang["Just Browsing!"]
         text_color: 0.6, 0.6, 0, 1
         theme_text_color: "Custom"
         font_style: "Overline"
         pos_hint: {'right': 1, 'top': 1}
         font_size: sp(13)
-
+        on_release: app.root.current = "home"
 
     MDBoxLayout:
         id: name_box
@@ -25,7 +25,7 @@
         adaptive_height: True
 
         MDLabel:
-            text: "Join Us"
+            text: app.lang["Join Us"]
             text_color: 0.7, 0.6, 0, 1
             theme_text_color: "Custom"
             font_style: "H3"
@@ -35,29 +35,34 @@
             id: username
             mode: "round"
             icon_right: "account-outline"
-            hint_text: "username"
+            hint_text: app.lang["username"]
             required: True
+            next: email
 
         MDTextField:
             id: email
             mode: "round"
-            hint_text: "email"
+            hint_text: app.lang["email"]
             icon_right: "email-outline"
             required: True
+            validator: "email"
+            next: lambda x: root.animate(1)
 
         MDBoxLayout:
             size_hint: 1, None
             padding: dp(10)
             height: dp(40)
             MDRectangleFlatButton:
-                text: "Next"
+                text: app.lang["Next"]
                 disabled: not (username.text and email.text)
                 on_release:
                     # Todo validate the email first
                     root.animate(1)
 
             MDFlatButton:
-                text: "Login"
+                text: app.lang["Login"]
+                on_release:
+                    app.root.current = "login"
 
     MDBoxLayout:
         id: pass_box
@@ -73,28 +78,30 @@
             id: password
             mode: "round"
             icon_right: "account-key-outline"
-            hint_text: "password"
+            hint_text: app.lang["password"]
             required: True
             password: True
+            next: password2
 
         MDTextField:
             id: password2
             mode: "round"
-            hint_text: "confirm password"
+            hint_text: app.lang["confirm password"]
             icon_right: "form-textbox-password"
             required: True
             password: True
+            next: lambda x: root.sign_up(username.text, email.text, password.text, password2.text)
 
         MDBoxLayout:
             size_hint: 1, None
             padding: dp(10)
             height: dp(40)
             MDRectangleFlatButton:
-                text: "Sign-Up"
+                text: app.lang["Sign-Up"]
                 disabled: not (password.text and password2.text)
                 on_release:
                     root.sign_up(username.text, email.text, password.text, password2.text)
             MDFlatButton:
-                text: "Back"
+                text: app.lang["Back"]
                 on_release:
                     root.animate(0)

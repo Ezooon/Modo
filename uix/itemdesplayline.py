@@ -11,7 +11,7 @@ from api.cart import CartItem
 from kivy.loader import Loader
 from kivymd.app import MDApp
 
-Loader.loading_image = "assets/item.jpg"
+Loader.loading_image = "assets/images/item.jpg"
 Builder.load_string("""
 <ItemCard>:
     size_hint: None, 1
@@ -105,7 +105,7 @@ class ItemCard(MDSmartTile):
     name = StringProperty("")
     description = StringProperty("")
     price = NumericProperty(1)
-    image = StringProperty("assets/item.jpg")
+    image = StringProperty("assets/images/item.jpg")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -163,7 +163,10 @@ class ItemCard(MDSmartTile):
 
     def favorite(self, button):
         app = MDApp.get_running_app()
-        self.item.favorite(app.set_favorite)
+        if app.username:
+            self.item.favorite(app.set_favorite)
+        else:
+            app.request_login()
 
     def to_cart(self, button):
         app = MDApp.get_running_app()
@@ -198,7 +201,7 @@ class ItemDisplayLine(MDBoxLayout):
         Item.get_items(self._load_items, on_failure=self.fail_to_load)
         self.spinner.active = True
 
-    def _load_items(self, items):
+    def _load_items(self, items, *_):
         """populating the desplay line with item widgets"""
         data = self.ids.recycle_view.data + [{"item": item, "size_hint": (None, 1)} for item in items]
         self.ids.recycle_view.data = data

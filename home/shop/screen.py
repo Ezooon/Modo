@@ -1,13 +1,18 @@
-from kivy.uix.image import AsyncImage
+from kivymd.app import MDApp
 from kivy.lang import Builder
-from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
+from api.item import Item
+from arabickivy import to_ar
 Builder.load_file("home/shop/ui.kv")
 
 
-class TopScrollView(MDScrollView):
-    pass
-
-
 class ShopTap(MDBottomNavigationItem):
-    pass
+    def search(self, text_field):
+
+        root = MDApp.get_running_app().root
+        ig_screen = root.get_screen("item_grid_screen")
+        ig_screen.title = text_field.text
+
+        Item.get_items(ig_screen.load_items, params={"search": text_field.text}, on_failure=ig_screen.failure)
+
+        root.current = "item_grid_screen"

@@ -40,7 +40,7 @@ class Message:
 
         def sent(_, data):
             db_messages.replace(self.id, data)
-            Message.MESSAGES.pop(self.id)
+            # Message.MESSAGES.pop(self.id)
             Message.unread.pop(self.id)
 
             self._on_data(data)
@@ -56,7 +56,7 @@ class Message:
         api_request("chat/messages/", sent, method="POST", body=body, **kwargs)
 
     @classmethod
-    def refresh_unread(cls, on_success=lambda x: None):
+    def refresh_unread(cls, on_success=lambda x: None, **kwargs):
         def message_wrapper(thread, response):
             messages_data = response
             messages = []
@@ -65,7 +65,7 @@ class Message:
             db_messages.add_messages(messages)
             on_success(messages)
 
-        api_request("chat/messages/", message_wrapper, body={"wait_list": list(cls.unread.keys())})
+        api_request("chat/messages/", message_wrapper, body={"wait_list": list(cls.unread.keys())}, **kwargs)
 
     @classmethod
     def get_undelivered_messages(cls, on_success=lambda x: None, **kwargs):
@@ -81,6 +81,22 @@ class Message:
 
         api_request("chat/messages/", message_wrapper,
                     params={"delivered": False, "sent_to": MDApp.get_running_app().user.id}, **kwargs)
+
+    @classmethod
+    def get_all_messages(cls, on_success=lambda x: None, **kwargs):
+        def message_wrapper(thread, response):
+            messages_data = response
+            messages = []
+            for data in messages_data:
+                messages.append(Message(**data))
+            db_messages.add_messages(messages)
+            if messages:
+                cls.mark_delivered()
+            on_success(messages)
+
+        i = MDApp.get_running_app().user.chat
+        api_request("chat/messages/", message_wrapper,
+                    params={"chat": i}, **kwargs)
 
     @classmethod
     def mark_delivered(cls):

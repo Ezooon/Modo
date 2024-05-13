@@ -46,17 +46,18 @@ class Account:
             items_data = data
             items = []
             for data in items_data:
-                items.append(Item(data))
+                items.append(Item(**data))
             on_success(items)
 
         api_request("account/favorite/", on_success=item_wrapper, params={"results": results}, **kwargs)
 
     def _fill_data(self, _, data):
         self.id = data.get("id") or -1
-        self.username = data.get("username") or "name"
-        self.email = data.get("email")
+        self.username = data.get("username") or ""
+        self.email = data.get("email") or ""
         self.image = data.get('image') or ""
         self.account_type = data.get('account_type') or "CL"
+        self.chat = data.get('chat') or 1
 
     def full_data(self):
         api_request("account/details/", self._fill_data)

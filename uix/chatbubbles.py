@@ -1,4 +1,6 @@
-from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.metrics import dp
+
+from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.properties import StringProperty, ObjectProperty, NumericProperty, ListProperty
 from kivy.lang import Builder
 from kivy.clock import Clock
@@ -19,7 +21,7 @@ def am_pm(t):
     return f"{hh}:{mm} {c}"
 
 
-class BubbleBase(MDBoxLayout):
+class BubbleBase(MDFloatLayout):
     BUBBLES = {}
     message = ObjectProperty(force_dispatch=True)
 
@@ -47,17 +49,12 @@ class BubbleBase(MDBoxLayout):
         sent = msg.sent or datetime.now()
         self.sent = am_pm(sent.time())
 
+    def on_height(self, _, h):
+        self.height = sum([w.height for w in self.children]) - dp(10)
+
 
 class ChatBubble(BubbleBase):
-
-    def on_message(self, _, message):
-        super(ChatBubble, self).on_message(_, message)
-
-        def on_failure(_):
-            Clock.schedule_once(lambda x: self.message.send(), 5)
-
-        if not message.sent:
-            message.send(on_failure=on_failure)
+    pass
 
 
 class CartBubble(BubbleBase):

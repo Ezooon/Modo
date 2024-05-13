@@ -3,7 +3,7 @@
     MDBoxLayout:
         orientation: "vertical"
         md_bg_color: self.theme_cls.bg_light
-#        background: "assets/leather.jpg"
+#        background: "assets/images/leather.jpg"
         size_hint: 1, 1
 
         MDBoxLayout:
@@ -18,7 +18,7 @@
                 on_release:
                     root.parent.current = "home"
             MDLabel:
-                text: "Favorite"
+                text: app.lang["Favorite"]
                 halign: "right"
 
         RecycleView:

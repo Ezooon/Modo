@@ -15,7 +15,7 @@ class Item:
         self.description = data.get("description") or "description"
         self.image = data.get("image") or ""
         self.add_by = data.get("add_by") or 1
-        self.stock = data.get("stock") or 1
+        self.stock = data.get("stock") or 0
 
         self.online = data.get("online") or True
 
@@ -25,7 +25,7 @@ class Item:
     @classmethod
     def get_item(cls, item_id, on_success=None, **kwargs):
         if not MDApp.get_running_app().online and item_id not in cls.ALLITEMS:
-            return db_items.get([item_id])
+            return Item(**db_items.get([item_id])[0])
         if not on_success or not cls.ALLITEMS[item_id].online:
             if item_id in cls.ALLITEMS:
                 return cls.ALLITEMS[item_id]
@@ -41,15 +41,26 @@ class Item:
         api_request(f"items/{item_id}/", item_wrapper, **kwargs)
 
     @classmethod
-    def get_items(cls, on_success=lambda x: None, **kwargs):
+    def get_items(cls, on_success=lambda x, y: None, **kwargs):
         def item_wrapper(thread, response):
-            items_data = response.get("results")
+            items_data = response.pop("results")
             items = []
             for data in items_data:
                 items.append(Item(**data))
-            on_success(items)
+            on_success(items, response)
 
         api_request("items/all-items/", item_wrapper, **kwargs)
+
+    @classmethod
+    def get_items_from_url(cls, url, on_success=lambda x, y: None, **kwargs):
+        def item_wrapper(thread, response):
+            items_data = response.pop("results")
+            items = []
+            for data in items_data:
+                items.append(Item(**data))
+            on_success(items, response)
+
+        api_request("", item_wrapper, full_url=url, **kwargs)
 
     @classmethod
     def check_items(cls, item_ids):

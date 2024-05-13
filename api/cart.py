@@ -59,7 +59,7 @@ class Cart:
 
         return report
 
-    def get_item(self, item_id):
+    def __getitem__(self, item_id):
         for c_item in self.c_item:
             if item_id in c_item.item.id:
                 return c_item

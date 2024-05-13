@@ -21,12 +21,12 @@
                 size_hint: 1, None
                 height: dp(60)
                 MDLabel:
-                    text: str(root.stock) + '\nUnits In Stock'
+                    text: str(root.stock) + '\n' + app.lang['Units In Stock']
                     halign: "center"
                 MDSeparator:
                     orientation: "vertical"
                 MDLabel:
-                    text: str(root.price) + ' SDG\nper Units'
+                    text: str(root.price) + ' SDG\n' + app.lang['per Units']
                     halign: "center"
 
             MDCard:
@@ -38,10 +38,10 @@
                     icon: "plus"
                     md_bg_color: 0, 1, 0, 1
                     on_release:
-                        if root.cart_units < root.stock: root.cart_units += 1
+                        root.increase_item_amount()
                 MDLabel:  # ToDo see if it's better to make this a confirm button to solve the problem of the real time stock draining
                     size_hint: 1, 1
-                    text: str(root.cart_units) + " in cart"
+                    text: str(root.amount) + " " + app.lang["in cart"]
                     halign: "center"
                     text_color: 0,0,0,1
                 MDIconButton:
@@ -49,11 +49,12 @@
                     icon: "minus"
                     md_bg_color: 1, 0, 0, 1
                     on_release:
-                        if root.cart_units > 0: root.cart_units -= 1
+                        root.decrease_item_amount()
 
             MDLabel:
-                text: "Description:"
+                text: app.lang["Description"] + ":"
                 size_hint: 1, None
+                halign: "right"
                 height: dp(20)
             MDLabel:
                 id: description
@@ -64,12 +65,12 @@
             ItemDisplayLine:
                 size_hint: 1, None
                 height: 200
-                title: "Simular"
+                title: app.lang["Simular"]
 
             ItemDisplayLine:
                 size_hint: 1, None
                 height: 200
-                title: "Also See"
+                title: app.lang["Also See"]
 
 
     MDBoxLayout:
@@ -83,12 +84,16 @@
                 app.root.current = "home"
         MDLabel:
             id: title
-            text: "item"
+            text: app.lang["item"]
             font_style: "H6"
             halign: "right"
             outline_color: 1,1,1,1
             outline_width: sp(1)
             pos_hint: {'center_y': 0.5}
         MDIconButton:
+            id: heart_button
             icon: "heart-outline"
             pos_hint: {'center_y': 0.5}
+            theme_text_color: "Custom"
+            on_release:
+                root.favorite(self)

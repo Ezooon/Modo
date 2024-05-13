@@ -5,8 +5,8 @@
 <ShopTap>:
     name: "shop"
     icon: "shopping-outline"
-    text: "Shop"
-    TopScrollView:
+    text: app.lang["Shop"]
+    ScrollView:
         do_scroll_x: False
         effect_cls: ScrollEffect
         MDGridLayout:
@@ -23,25 +23,26 @@
                     mode: "round"
                     size_hint: 0.1, None
                     height: dp(50)
-                    hint_text: "Search"
+                    hint_text: app.lang["Search"]
                     icon_right: "magnify"
                     halign: "right"
                     line_color_normal: 1,1,1,0
                     line_color_focus: 1,1,1,0
                     pos_hint: {"center_y": 0.5}
+                    next: root.search
 
 #            TagScrollView:
 #                size_hint: 1, None
 #                height: 80
-#                data: [{"size_hint": (None, 1), "text": "balah", "source": "assets/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"},]
+#                data: [{"size_hint": (None, 1), "text": "balah", "source": "assets/images/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"},]
 
             ItemDisplayLine:
                 size_hint: 1, None
                 height: 190
-                title: "Hand Bags"
+                title: app.lang["Hand Bags"]
 
             ItemDisplayLine:
                 size_hint: 1, None
                 height: 190
-                title: "Accessories"
+                title: app.lang["Accessories"]
 #                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]

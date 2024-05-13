@@ -1,5 +1,4 @@
 import re
-from kivy.clock import mainthread
 from kivy.app import App
 from kivy.core.text import Label as CoreLabel
 from kivy.uix.label import Label
@@ -8,9 +7,9 @@ from kivy.uix.textinput import TextInput, Cache_append, Cache_get
 from arabic_reshaper import reshape  # يلصق الأحرف
 from bidi.algorithm import get_display  # يرتب الأحرف
 from kivy.graphics import Rectangle
-from kivy.metrics import sp, dp
+from kivy.metrics import sp
 from kivy.properties import ObjectProperty
-from kivy.utils import get_hex_from_color
+
 
 app = App.get_running_app()
 FL_IS_LINEBREAK = 0x01
@@ -108,14 +107,13 @@ class ArButton(Button):
     def __init__(self, **kwargs):
         super(ArButton, self).__init__(**kwargs)
         self.text = to_ar(self.text)
-        # self.font_name = "assets/languages/micross.ttf"
 
 
 class ArLabel(Label):
     def __init__(self, **kwargs):
-        super(ArLabel, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.text = get_display(reshape(self.text))
-        self.font_name = "assets/fun.ttf"
+        self.font_name = "kivymd/fonts/Roboto-Regular.ttf"
         self.halign = 'left'  # App.get_running_app().lang_direction
 
 
@@ -197,7 +195,7 @@ class ArInput(TextInput):
     def keyboard_on_key_down(self, window, keycode, text, modifiers):
         if 'shift' in modifiers:
             return False
-        if keycode[0] in (9,) and self.next:
+        if keycode[0] in (9, 13) and self.next:
             self.focus = False
             if callable(self.next):
                 self.next(self)
