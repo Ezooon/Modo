@@ -5,6 +5,14 @@ from database.items import db_items
 
 class Item:
     ALLITEMS = {}
+    Categories = {
+        "Nothing": 1,
+        "حقائب": 2,
+        "خواتم": 3,
+        "أسورة": 4,
+        "عطور": 5,
+        "أحذية": 6,
+    }
 
     def __init__(self, **data):
         self.data = data
@@ -15,12 +23,22 @@ class Item:
         self.description = data.get("description") or "description"
         self.image = data.get("image") or ""
         self.add_by = data.get("add_by") or 1
+        self.category = data.get("category") or "Nothing"
+        self.category_id = Item.Categories.get(self.category)
         self.stock = data.get("stock") or 0
 
         self.online = data.get("online") or True
 
         # add to ALLITEMS
         Item.ALLITEMS[self.id] = self
+
+    @classmethod
+    def get_all_categories(cls, on_success=lambda x, y: None, **kwargs):
+        def success(response, categories):
+            for cat in categories:
+                cls.Categories[cat["name"]] = cat['id']
+            on_success(response, categories)
+        api_request("items/categories/", success, **kwargs)
 
     @classmethod
     def get_item(cls, item_id, on_success=None, **kwargs):
@@ -50,6 +68,17 @@ class Item:
             on_success(items, response)
 
         api_request("items/all-items/", item_wrapper, **kwargs)
+
+    @classmethod
+    def get_category_items(cls, category, on_success=lambda x, y: None, **kwargs):
+        def item_wrapper(thread, response):
+            items_data = response.pop("results")
+            items = []
+            for data in items_data:
+                items.append(Item(**data))
+            on_success(items, response)
+
+        api_request("items/all-items/", item_wrapper, params={"category": cls.Categories[category]}, **kwargs)
 
     @classmethod
     def get_items_from_url(cls, url, on_success=lambda x, y: None, **kwargs):

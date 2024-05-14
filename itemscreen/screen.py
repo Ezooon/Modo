@@ -1,5 +1,7 @@
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty, StringProperty, NumericProperty, ColorProperty
+
+from api.item import Item
 from kivymd.toast import toast
 
 from utils.image_colors import get_accent_color
@@ -14,7 +16,7 @@ Builder.load_file("itemscreen/ui.kv")
 
 
 class ItemScreen(MDScreen):
-    item = ObjectProperty()
+    item = ObjectProperty(Item())
     incartitem = ObjectProperty(allownone=True)
     description = StringProperty("")
     price = NumericProperty(1)
@@ -47,6 +49,9 @@ class ItemScreen(MDScreen):
         self.stock = item.stock
         self.incartitem = app.cart.get_widget(self.item.id)
         self.amount = self.incartitem.item_card.amount if self.incartitem else 0
+
+        # simular display line
+        self.ids.simular.params = {"category": self.item.category_id}
 
         # in favorite?
         heart_button = self.ids.heart_button

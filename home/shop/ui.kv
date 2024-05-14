@@ -6,6 +6,7 @@
     name: "shop"
     icon: "shopping-outline"
     text: app.lang["Shop"]
+
     ScrollView:
         do_scroll_x: False
         effect_cls: ScrollEffect
@@ -14,35 +15,17 @@
             cols: 1
             spacing: dp(10)
             orientation: "lr-tb"
+            padding: 0, dp(57), 0, 0
             adaptive_height: True
-            MDBoxLayout:
-                size_hint: 1, None
-                height: dp(50)
-                padding: dp(20), dp(20), dp(20), 0
-                MDTextField:
-                    mode: "round"
-                    size_hint: 0.1, None
-                    height: dp(50)
-                    hint_text: app.lang["Search"]
-                    icon_right: "magnify"
-                    halign: "right"
-                    line_color_normal: 1,1,1,0
-                    line_color_focus: 1,1,1,0
-                    pos_hint: {"center_y": 0.5}
-                    next: root.search
 
-#            TagScrollView:
-#                size_hint: 1, None
-#                height: 80
-#                data: [{"size_hint": (None, 1), "text": "balah", "source": "assets/images/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"}, {"size_hint": (None, 1), "text": "balah", "source": "C:/Users/hp/Pictures/Modo Logo.jpg"},]
-
-            ItemDisplayLine:
-                size_hint: 1, None
-                height: 190
-                title: app.lang["Hand Bags"]
-
-            ItemDisplayLine:
-                size_hint: 1, None
-                height: 190
-                title: app.lang["Accessories"]
-#                data: [{"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, {"size_hint": (None, 1), "text": "ring word"}, {"size_hint": (None, 1), "text": "ring two words"}, {"size_hint": (None, 1), "text": "ring three words four"}, ]
+    MDTextField:
+        pos: dp(10), root.height - dp(47)
+        size_hint: None, None
+        mode: "round"
+        size: root.width - dp(20), dp(37)
+        hint_text: app.lang["Search"]
+        icon_right: "magnify"
+        halign: "right"
+        line_color_normal: 1,1,1,0
+        line_color_focus: 1,1,1,0
+        next: root.search

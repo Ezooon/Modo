@@ -3,7 +3,7 @@ from kivymd.uix.imagelist import MDSmartTile
 from kivymd.uix.spinner import MDSpinner
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty
+from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, DictProperty
 from kivy.clock import Clock
 from kivy.metrics import dp
 from api.item import Item, db_items
@@ -78,24 +78,28 @@ Builder.load_string("""
             text: root.title
             halign: "right"
             font_style: "Subtitle1"
-            
-    RecycleView:
-        id: recycle_view
-        viewclass: "ItemCard"
-        size_hint: 1, 1
-        bar_inactive_color: 1,1,1,0
-        bar_color: 1,1,1,0
-        data: root.data
-        do_scroll_y: False
-        scroll_timeout: 500
-        MDRecycleGridLayout:
-            id: content
-            orientation: "rl-tb"
+      
+    BoxLayout:
+        BoxLayout:
             size_hint: None, 1
-            rows: 1
-            adaptive_width: True
-            padding: dp(5)
-            spacing: dp(10)
+            width: root.width - content.width if root.width > content.width else 0 
+        MDRecycleView:
+            id: recycle_view
+            viewclass: "ItemCard"
+            size_hint: 1, 1
+            bar_inactive_color: 1,1,1,0
+            bar_color: 1,1,1,0
+            data: root.data
+            do_scroll_y: False
+            scroll_timeout: 500
+            MDRecycleGridLayout:
+                id: content
+                orientation: "rl-tb"
+                size_hint: None, 1
+                rows: 1
+                adaptive_width: True
+                padding: dp(5)
+                spacing: dp(10)
 
 """)
 
@@ -169,6 +173,7 @@ class ItemCard(MDSmartTile):
             app.request_login()
 
     def to_cart(self, button):
+        print(self.size)
         app = MDApp.get_running_app()
         db_items.add_items([self.item])
         if self.item.id in app.cart.items:
@@ -180,30 +185,33 @@ class ItemCard(MDSmartTile):
 class ItemDisplayLine(MDBoxLayout):
     title = StringProperty("")
     data = ListProperty([])
+    params = DictProperty({"ordering": "?"})
 
     def __init__(self, **kwargs):
-        super(ItemDisplayLine, self).__init__(**kwargs)
-        Clock.schedule_once(self.start, 1)
         self.spinner = MDSpinner(size=(dp(40), dp(40)))
+        super(ItemDisplayLine, self).__init__(**kwargs)
+        Clock.schedule_once(lambda x: self.load(), 1)
         floating = FloatLayout(size=(0, 0))
         self.add_widget(floating)
         floating.size_hint = (None, None)
         floating.add_widget(self.spinner)
 
-    def start(self, _):
+    def on_center(self, _, pos):
         self.spinner.size_hint = (None, None)
         self.spinner.y = self.center_y - dp(20)
         self.spinner.x = self.center_x
+
+    def on_params(self, _, params):
         self.load()
 
     def load(self):
-        self.ids.recycle_view.data = []
-        Item.get_items(self._load_items, on_failure=self.fail_to_load)
+        Item.get_items(self._load_items, params=self.params, on_failure=self.fail_to_load)
         self.spinner.active = True
 
     def _load_items(self, items, *_):
-        """populating the desplay line with item widgets"""
-        data = self.ids.recycle_view.data + [{"item": item, "size_hint": (None, 1)} for item in items]
+        """populating the display line with item widgets"""
+        data = [{"item": item, "size_hint": (None, 1), "size": (self.height - dp(50), self.height - dp(50))}
+                for item in items]
         self.ids.recycle_view.data = data
         self.ids.recycle_view.scroll_x = 1
         self.spinner.active = False
@@ -219,4 +227,10 @@ class ItemDisplayLine(MDBoxLayout):
         if icon == "reload":
             self.load()
             return
-        # ToDO when it's left-arrow
+        root = MDApp.get_running_app().root
+        ig_screen = root.get_screen("item_grid_screen")
+        ig_screen.title = self.title
+
+        Item.get_items(ig_screen.load_items, params=self.params, on_failure=ig_screen.failure)
+
+        root.current = "item_grid_screen"

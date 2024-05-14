@@ -58,6 +58,8 @@ class ModoApp(MDApp):
         with open('assets/lang/' + self.config.get("App", "language") + ".json", "r", encoding="UTF-8") as jf:
             self.lang = json.load(jf)
 
+        self.connected()
+
         # account
         from api.account import Account
 
@@ -109,6 +111,7 @@ class ModoApp(MDApp):
             if not self.online:
                 self.online = True
                 toast("You Are Back Online", (0, 1, 0, 1))
+                self.connected()
             self.chat_screen.add_messages(*args)
 
         def remove_msg(msg):
@@ -118,6 +121,10 @@ class ModoApp(MDApp):
         Message.refresh_unread()
         for msg in self.send_list:
             msg.send(remove_msg)
+
+    def connected(self):
+        from api.item import Item
+        Item.get_all_categories()
 
     def request_login(self, *args):
         self.root.current = "signup"

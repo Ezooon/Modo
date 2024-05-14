@@ -3,7 +3,7 @@ from sqlite3 import connect
 
 class ItemsTable:
     def __init__(self):
-        self.connection = connect("database/offline.db")
+        self.connection = connect("database/local.db")
         self.cur = self.connection.cursor()
 
     def get(self, ids):

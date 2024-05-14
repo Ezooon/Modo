@@ -78,9 +78,9 @@
                     if app.username: app.root.current = "favorite_screen"
                     if not app.username: app.request_login()
 
-            OneLineIconItem:
-                text: app.lang["Settings"]
-                icon: "cog-outline"
+#            OneLineIconItem:
+#                text: app.lang["Settings"]
+#                icon: "cog-outline"
             OneLineIconItem:
                 text: app.lang["Privacy Policy"]
                 icon: "script-text-key-outline"
@@ -98,13 +98,13 @@
                     if app.username: app.logout()
                     if not app.username: app.root.current = "login"
 
-    MDIconButton:
-        icon: 'pencil'
-        theme_text_color: "Custom"
-        icon_color: 0,0,0,1
-        pos_hint: {"top": 1}
-        disabled: not app.username
-        opacity: 0 if not app.username else 1
+#    MDIconButton:
+#        icon: 'pencil'
+#        theme_text_color: "Custom"
+#        icon_color: 0,0,0,1
+#        pos_hint: {"top": 1}
+#        disabled: not app.username
+#        opacity: 0 if not app.username else 1
 
     MDRaisedButton:
         text: app.lang["Sign Up and Order NOW!"]
