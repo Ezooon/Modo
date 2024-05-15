@@ -48,14 +48,16 @@ Builder.load_string("""
         c_item: root.c_item
         radius: root.radius
         size_hint: 1, 1
-        pressed: root.pressed
+        pressed: root.on_press
 """)
 
 
 class InCartSwipeItem(MDCardSwipe):
     c_item = ObjectProperty()
+    pressed = ObjectProperty(print)
 
-    def pressed(self, instance):
+    def on_press(self, instance):
+        self.pressed(self)
         pass
 
 

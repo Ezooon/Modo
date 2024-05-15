@@ -67,6 +67,7 @@ class CartTap(MDBottomNavigationItem):
                 return itemx.item_card.amount
 
     def change_amount(self, itemx):
+        print("less shit")
         self.focused_item = itemx
         self.ids.amount_label.text = "X" + str(itemx.item_card.amount)
         Animation(y=dp(31), d=0.1).start(self.ids.total_box)

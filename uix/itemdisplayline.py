@@ -31,15 +31,15 @@ Builder.load_string("""
             shorten_from: "left"
             shorten: True
             font_size: sp(14)
-            color: self.theme_cls.bg_normal
-            outline_color: self.theme_cls.opposite_bg_normal
+            color: self.theme_cls.opposite_text_color
+            outline_color: self.theme_cls.text_color
             outline_width: sp(1)
         MDLabel:
             text: str(root.price) + " SDG"
             font_style: "Caption"
             font_size: sp(12)
-            color: self.theme_cls.bg_normal
-            outline_color: 0,0,0,1
+            color: self.theme_cls.opposite_text_color
+            outline_color: self.theme_cls.text_color
             outline_width: sp(1)
             
     MDFloatLayout:
