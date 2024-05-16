@@ -57,7 +57,7 @@ class Account:
         self.email = data.get("email") or ""
         self.image = data.get('image') or ""
         self.account_type = data.get('account_type') or "CL"
-        self.chat = data.get('chat') or 1
+        self.chat = data.get('chat') or 0
 
     def full_data(self):
         api_request("account/details/", self._fill_data)

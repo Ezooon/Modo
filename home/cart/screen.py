@@ -67,7 +67,6 @@ class CartTap(MDBottomNavigationItem):
                 return itemx.item_card.amount
 
     def change_amount(self, itemx):
-        print("less shit")
         self.focused_item = itemx
         self.ids.amount_label.text = "X" + str(itemx.item_card.amount)
         Animation(y=dp(31), d=0.1).start(self.ids.total_box)
@@ -80,7 +79,11 @@ class CartTap(MDBottomNavigationItem):
     def order(self):
         c_items = [widget.c_item for widget in self.ids.items_list.children]
         self.ordered_cart = Cart(c_items=c_items)
-        self.ordered_cart.order(self.ordered)
+        self.ordered_cart.order(self.ordered, on_failure=self.order_fail)
+
+    def order_fail(self, request, response):
+        if request.resp_status == 409:
+            toast(MDApp.get_running_app().lang["Finish or Cancel your Current Order First"])
 
     def ordered(self, cart):
         app = MDApp.get_running_app()

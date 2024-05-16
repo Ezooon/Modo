@@ -33,10 +33,6 @@ class BubbleBase(MDFloatLayout):
     #  2: delivered
     #  3: read
 
-    def __init__(self, **kwargs):
-        super(BubbleBase, self).__init__(**kwargs)
-        Clock.schedule_interval(self.update_message, 5)
-
     def update_message(self, _):
         if self.message:
             self.message = Message.MESSAGES[self.message.id]
@@ -48,6 +44,9 @@ class BubbleBase(MDFloatLayout):
         self.status = bool(msg.sent) + msg.delivered + msg.read
         sent = msg.sent or datetime.now()
         self.sent = am_pm(sent.time())
+
+        if not msg.delivered:
+            Clock.schedule_interval(self.update_message, 5)
 
     def on_height(self, _, h):
         self.height = sum([w.height for w in self.children]) - dp(10)

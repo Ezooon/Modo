@@ -600,10 +600,10 @@ class MDLabel(
     def _get_text(self):
         if self._capitalizing:
             return self._text.upper()
-        return self._text
+        return to_ar(self._text)
 
     def _set_text(self, value):
-        self._text = to_ar(value)
+        self._text = value
 
     _text = StringProperty()
 

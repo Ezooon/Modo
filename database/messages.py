@@ -9,7 +9,8 @@ class MessagesTable:
     def get_all(self, **kwargs):
         filters = ""
         if kwargs:
-            filters = " WHERE " + " ".join([f'{op} = {kwargs[op]}' for op in kwargs])
+            filters = " WHERE " + " ".join([f'{op} {"=" if kwargs[op] is not None else "is"}'
+                                            f' {kwargs[op] if kwargs[op] is not None else "NULL"}' for op in kwargs])
         line = "SELECT * FROM messages" + filters + ";"
 
         self.cur.execute(line)

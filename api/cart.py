@@ -29,7 +29,6 @@ class Cart:
     def order(self, on_success=lambda x: None, **kwargs):
 
         def ordered(_, data):
-            print(data)
             on_success(Cart(**data))
 
         body = {

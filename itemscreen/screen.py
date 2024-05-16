@@ -26,7 +26,7 @@ class ItemScreen(MDScreen):
     background_color = ColorProperty()
 
     def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
+        super().__init__(*args, **kwargs)
         self.toolbar = None
         MDApp.get_running_app().bind(favorite=self.on_favorite_items)
 

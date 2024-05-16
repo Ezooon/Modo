@@ -1,5 +1,6 @@
 import webbrowser
 
+from api.message import Message
 from kivymd.app import MDApp
 from kivymd.uix.screenmanager import ScreenManager
 from kivymd.toast import toast
@@ -43,7 +44,7 @@ class ModoApp(MDApp):
         config.setdefaults("App", {
             "saved cart": [],
             "first launch": True,
-            "language": "English"
+            "language": "Arabic"
         })
 
         config.setdefaults("Account", {
@@ -73,6 +74,10 @@ class ModoApp(MDApp):
         # favorites
         self.user.get_favorite(self.set_favorite, results="simple")
 
+        # loading the to send Q
+        self.send_list = Message.get_not_sent()
+
+        # self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Amber"
         sm = SM()
 
@@ -114,13 +119,17 @@ class ModoApp(MDApp):
                 self.connected()
             self.chat_screen.add_messages(*args)
 
-        def remove_msg(msg):
-            self.send_list.remove(msg)
+        def re_msg(msg, *_):
+            self.send_list.append(msg)
 
         Message.get_undelivered_messages(set_online, on_failure=set_offline)
         Message.refresh_unread()
+
+        self.send_list.sort(key=lambda x: x.id)
+        self.send_list.reverse()
         for msg in self.send_list:
-            msg.send(remove_msg)
+            msg.send(on_failure=re_msg)
+        self.send_list = []
 
     def connected(self):
         from api.item import Item

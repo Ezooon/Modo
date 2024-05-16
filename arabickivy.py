@@ -34,15 +34,37 @@ def word(text, index=1):
     return r_word
 
 
-def reform(text, width):
+def break_lines(text, width, font_size=sp(20)):
+    lines = text.splitlines()
+    new_lines = []
+    for line in lines:
+        last_space = line.find(" ")
+        if not text_size(line, font_size)[0] >= width:
+            new_lines.append(line)
+        for i in range(line.count(" ")):
+            next_space = line.find(" ", last_space + 1)
+            if text_size(line[:next_space], font_size)[0] >= width:
+                new_lines.append(line[:last_space])
+                lines.append(line[last_space:])
+                break
+            last_space = next_space
+
+    if new_lines:
+        return '\n'.join(new_lines)
+    else:
+        return text
+
+
+def reform(text, width, font_size=sp(20)):
     lines = text.split('\n')
     new_lines = []
     for line in lines:
+        print(text_size(line, font_size))
         if not indexes(line) or not any(list(filter(lambda x: x in arabic_letters, line))):
             new_lines.append(line)
             continue
         lsi = indexes(line)[-1]
-        if text_size(line)[0] > width:
+        if text_size(line, font_size)[0] > width:
             # line = to_ar(line)[:lsi]+"\n"+to_ar(line)[lsi+1:]
             new_lines.append(line[lsi:])
             new_lines.append(line[:lsi])

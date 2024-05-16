@@ -30,7 +30,9 @@ class ChatScreen(MDScreen):
     def send(self, text_field):
         text = text_field.text
         msg = Message(content=text)
+        db_messages.add_messages([msg])
         MDApp.get_running_app().send_list.append(msg)
+
         if text.startswith('C{"id": '):
             self.data.append({"viewclass": 'CartBubble', "message": msg,
                               "size_hint": (1, None)})
@@ -40,10 +42,14 @@ class ChatScreen(MDScreen):
         text_field.text = ""
         self.ids.sv.refresh_from_data()
 
-    def add_messages(self, messages):
+    def add_messages(self, messages, to_send=False):
         data = []
+        msgs_to_send = []
         for msg in messages:
             if msg.id not in ChatBubble.BUBBLES:
+                if msg.id < 1 and not to_send:
+                    msgs_to_send.append(msg)
+                    continue
                 if msg.content.startswith('C{"id": '):
                     data.append({"viewclass": 'CartBubble', "message": msg,
                                  "size_hint": (1, None)})
@@ -60,3 +66,8 @@ class ChatScreen(MDScreen):
             self.data = self.data + data
             self.ids.sv.scroll_y = 0
             self.ids.sv.refresh_from_data()
+
+        if msgs_to_send:
+            msgs_to_send.sort(key=lambda x: x.id)
+            msgs_to_send.reverse()
+            self.add_messages(msgs_to_send, True)

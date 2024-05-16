@@ -11,7 +11,8 @@ from api.cart import CartItem
 from kivy.loader import Loader
 from kivymd.app import MDApp
 
-Loader.loading_image = "assets/images/item.jpg"
+Loader.error_image = "assets/images/error.jpg"
+Loader.loading_image = "assets/images/loading.jpg"
 Builder.load_string("""
 <ItemCard>:
     size_hint: None, 1
