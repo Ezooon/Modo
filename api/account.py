@@ -1,3 +1,4 @@
+from os.path import exists
 from .apirequest import api_request, HOST
 from .item import Item
 
@@ -62,3 +63,14 @@ class Account:
     def full_data(self):
         api_request("account/details/", self._fill_data)
         return self
+
+    def update_profile_photo(self, img_path, on_success=lambda x, y: None):
+        img = None
+        if exists(img_path):
+            with open(img_path, "rb") as f:
+                img = f.read()
+
+        if img:
+            api_request("account/image/" + self.username + ".jpg/", on_success=on_success,
+                        headers={'Content-type': 'multipart/form-data'},
+                        body=img, method="PATCH")
